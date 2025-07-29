@@ -1,0 +1,860 @@
+
+# 人群服务元数据相关接口
+
+## 授权
+
+	请求header添加
+	timestamp 	时间戳(毫秒)
+	randomStr	随机字符串(至少10个字符)
+	token	签名
+
+#### 签名规则
+
+	token = SHA-512('apiSecret=' + apiSecret + '&randomStr=' + randomStr + '&timestamp=' + timestamp);
+
+	audience的apiSecret: ucmjwlyhdi2k6w5pxvfgvi
+
+## 运营单位指定
+
+元数据获取需要限定所属视图， OM中视图与UPM运营单位一一绑定， 通过指定运营单位可获取对应视图下的一系列元数据。
+
+#### 方法
+    接口请求Header参数中， 添加 unitId 字段
+
+```
+curl 'http://HOST/api/v1/open/usertype-object-list' \
+  -H 'Accept: application/json, text/plain, */*' \
+  ...
+  -H 'unitId: 3' \
+  --compressed
+```
+
+## 人群服务元数据相关接口
+
+* [(get) /api/v1/open/usertype-object-list](#对象列表) 对象列表
+* [(get) /api/v1/open/segment/attributes](#属性标签列表) 属性标签列表
+* [(get) /api/v1/open/segment/propertys](#属性列表) 属性列表
+* [(get) /api/v1/open/segment/tags](#标签列表) 标签列表
+* [(get) /api/v1/open/segment/idTypes](#对象ID类型列表) 对象ID类型列表
+* [(get) /api/v1/open/segment/actions](#行为列表) 行为列表
+* [(get) /api/v1/open/segment/action/dimensions](#行为维度列表) 行为维度列表
+* [(get) /api/v1/open/segment/action/metrics](#行为指标列表) 行为指标列表
+* [(get) /api/v1/open/segment/events](#事件列表) 事件列表
+* [(get) /api/v1/open/segment/object-relations](#对象关系列表) 对象关系列表
+* [(get) /api/v1/open/segment/object-relation/related-objects](#和当前对象存在关系的对象列表) 和当前对象存在关系的对象列表
+* [(get) /api/v1/open/segment/object-relation/related-relations](#两个对象之间存在的关系的列表) 两个对象之间存在的关系的列表
+* [(get) /api/v1/open/segment/object-relation/propertys](#对象关系属性列表) 对象关系属性列表
+* [(get) /api/v1/open/segment/object-relation/property/values](#对象关系选项型属性属性值) 对象关系选项型属性属性值
+
+### 对象列表
+
+#### /api/v1/open/usertype-object-list
+
+人群可用对象列表， 包含ObjectModeling中定义的融合对象以及实体对象， 范围取决于当前运营单位关联视图中配置的对象列表。
+
+请求方式: GET
+
+请求CURL示例
+```shell
+    curl --location 'http://HOST/audience/api/api/v1/open/usertype-object-list' \
+    --header 'unitId: 3'
+```
+
+返回值示例: 
+```json
+{
+    "data": [
+        {
+            "id": "ME32", // 对象ID
+            "name": "消费者v3", // 对象名称
+            "type": 2, // 对象类型
+            "applyOffline": true, // 是否可用于离线应用
+            "applyOnline": true, // 是否可用于实时应用
+            "objectIds": [ // 对象内部关联对象ID列表 ( 包含 融合对象本身ID 以及 内部关联的实体对象ID )
+                "ME32",
+                "EN1",
+                "EN31",
+                "EN2",
+                "EN18"
+            ],
+            "innerObjects": [ // 融合对象内置可用于人群创建的对象基本信息列表
+                { // 第一个内置对象就是当前融合对象本身
+                    "id": "ME32", // id - ( 融合对象ID )
+                    "name": "消费者v3",
+                    "type": 2
+                },
+                { 
+                    "id": "EN1",
+                    "name": "注册会员",
+                    "type": 1,
+                    "permissionFilterAttrs": [ ... ], // 个体识别属性过滤规则
+                },
+                { 
+                    "id": "EN31",
+                    "name": "实时线索",
+                    "type": 1,
+                    "permissionFilterAttrs": [ ... ],
+                }
+            ], 
+            remark: "备注信息"
+        },
+        {
+            "id": "EN18",
+            "name": "领券买家",
+            "type": 1,
+            "mergeObjectId": 18,
+            "entityObjectId": 52, // 实际实体对象ID
+            "applyOffline": true,
+            "applyOnline": true,
+            "objectIds": [
+                "EN18"
+            ],
+            "permissionFilterAttrs": []
+        },
+        {
+            "id": "EN1",
+            "name": "注册会员",
+            "type": 1,
+            "mergeObjectId": 1,
+            "entityObjectId": 1,
+            "applyOffline": true,
+            "applyOnline": true,
+            "objectIds": [
+                "EN1"
+            ],
+            "permissionFilterAttrs": [ // 个体识别属性过滤规则
+                {
+                    "propertyId": 6,
+                    "propertyName": "qty",
+                    "operation": "$eq",
+                    "values": [
+                        {
+                            "value": "4",
+                            "label": "同城寄"
+                        },
+                        {
+                            "value": "3",
+                            "label": "时效寄"
+                        }
+                    ]
+                },
+                {
+                    "propertyId": 2,
+                    "propertyName": "省份",
+                    "operation": "$eq",
+                    "values": [
+                        {
+                            "value": "上海市",
+                            "label": "上海市"
+                        },
+                        {
+                            "value": "北京市",
+                            "label": "北京市"
+                        },
+                        {
+                            "value": "天津市",
+                            "label": "天津市"
+                        },
+                        {
+                            "value": "重庆市",
+                            "label": "重庆市"
+                        }
+                    ]
+                }
+            ],
+        }
+    ],
+    "status": {
+        "code": "E0", // EO：正常；其他值时是异常
+        "message": "ok"  // 详细信息
+    }
+}
+```
+
+
+### 属性标签列表
+
+#### /api/v1/open/segment/attributes
+
+获取对象下属性和标签集合列表
+
+请求方式: GET
+
+query 参数：            
+
+| 参数     | 类型   | 是否必填 | 说明                   |
+|----------|--------|----------|------------------------|
+|  objectModelId   | string| | 对象ID     |
+
+请求CURL示例
+```shell
+curl --location 'http://HOST/audience/api/api/v1/open/segment/attributes?objectModelId=ME32' \
+--header 'unitId: 3'
+```
+
+返回值示例
+```json
+{  
+    "data": [
+        {
+            "id": 487, // ID
+            "name": "phone", // 名称
+            "type": 3, // 类型： 1: 标签 3: 属性
+            "profileType": 5, // 数据类型标识： 5.文本 6.数值 7.日期 10.选项 24.多选
+            "objectId": "EN18", // 所属对象ID
+            "objectName": "领券买家", // 所属对象名称
+            "subjectId": 542, // 特征主题ID
+            "subjectName": "2023年购物特征", // 特征主题名称
+            "applyOffline": true, // 应用方向支持离线
+            "applyOnline": false, // 应用方向支持实时
+            "encryptType": "none", // 加密配置
+            "internalEncrypeType": null, // 内部加密类型
+            "refExtraInfo": { // 业务应用配置， 关于洞察图表类型，分段规则等等
+                "isSegmentConstruct": 1,
+                "isInsight": 1,
+                "chartType": "line",
+                "sectionRule": [
+                    {
+                        "name": "11",
+                        "operator": "$gt",
+                        "value": [
+                            "3"
+                        ]
+                    }
+                ]
+            },
+        },
+        ...
+        {
+            "id": 1,
+            "name": "订单所属月份",
+            "type": 1,
+            "objectId": "EN1",
+            "objectName": "注册会员",
+            "subjectId": 380,
+            "subjectName": "other",
+            "applyOffline": true,
+            "applyOnline": false,
+            "profileType": 24,
+            "coverage": "50000",
+            "refExtraInfo": {
+                "isSegmentConstruct": 1,
+                "isInsight": 0,
+                "chartType": null,
+                "sectionRule": []
+            },
+        }
+    ],
+    "status": {
+        "code": "E0",
+        "message": "ok"
+    }
+}
+```
+
+
+### 属性列表
+
+#### /api/v1/open/segment/propertys
+
+获取对象下可用于圈人的属性列表
+
+query 参数：            
+
+| 参数     | 类型   | 是否必填 | 说明                   |
+|----------|--------|----------|------------------------|
+|  objectModelId   | string| | 对象ID     |
+
+请求CURL示例
+```shell
+curl --location 'http://HOST/audience/api/api/v1/open/segment/propertys?objectModelId=ME32' \
+--header 'unitId: 3'
+```
+
+返回值示例
+```json
+{  
+    "data": [
+        {
+            "id": 487, // ID
+            "name": "phone", // 名称
+            "profileType": 5, // 数据类型标识： 5.文本 6.数值 7.日期 10.选项 24.多选
+            "objectId": "EN18", // 所属对象ID
+            "objectName": "领券买家", // 所属对象名称
+            "subjectId": 542, // 特征主题ID
+            "subjectName": "2023年购物特征", // 特征主题名称
+            "applyOffline": true, // 应用方向支持离线
+            "applyOnline": false, // 应用方向支持实时
+            "encryptType": "none", // 加密配置
+            "internalEncrypeType": null, // 内部加密类型
+            "refExtraInfo": { // 业务应用配置， 关于洞察图表类型，分段规则等等
+                "isSegmentConstruct": 1,
+                "isInsight": 1,
+                "chartType": "line",
+                "sectionRule": [
+                    {
+                        "name": "11",
+                        "operator": "$gt",
+                        "value": [
+                            "3"
+                        ]
+                    }
+                ]
+            },
+        },
+        ...
+    ],
+    "status": {
+        "code": "E0",
+        "message": "ok"
+    }
+}
+```
+
+### 标签列表
+
+#### /api/v1/open/segment/tags
+
+获取对象下可用于圈人的标签列表
+
+请求方式: GET
+
+query 参数：            
+
+| 参数     | 类型   | 是否必填 | 说明                   |
+|----------|--------|----------|------------------------|
+|  objectModelId   | string| | 对象ID     |
+
+请求CURL示例
+```shell
+curl --location 'http://HOST/audience/api/api/v1/open/segment/tags?objectModelId=ME32' \
+--header 'unitId: 3'
+```
+
+返回值示例
+```json
+{  
+    "data": [
+        {
+            "id": 1,
+            "name": "订单所属月份",
+            "type": 1,
+            "objectId": "EN1",
+            "objectName": "注册会员",
+            "subjectId": 380,
+            "subjectName": "other",
+            "applyOffline": true,
+            "applyOnline": false,
+            "profileType": 24,
+            "coverage": "50000",
+            "refExtraInfo": {
+                "isSegmentConstruct": 1,
+                "isInsight": 0,
+                "chartType": null,
+                "sectionRule": []
+            },
+        },
+        ...
+    ],
+    "status": {
+        "code": "E0",
+        "message": "ok"
+    }
+}
+```
+
+### 对象ID类型列表
+
+#### /api/v1/open/segment/idTypes
+
+获取对象下对象id类型列表
+
+请求方式: GET
+
+query 参数：            
+
+| 参数     | 类型   | 是否必填 | 说明                   |
+|----------|--------|----------|------------------------|
+|  objectModelId   | string| | 对象ID     |
+
+请求CURL示例
+```shell
+curl --location 'http://HOST/audience/api/api/v1/open/segment/idTypes?objectModelId=ME32' \
+--header 'unitId: 3'
+```
+
+返回值示例
+```json
+{  
+    "data": [
+        {
+            "id": 1008, // 对象ID类型 的 id
+            "name": "mobile", // 对象ID类型 的 名称
+            ...
+        },
+        {
+            "id": 1002,
+            "name": "openid",
+            ...
+        }
+        ...
+    ],
+    "status": {
+        "code": "E0",
+        "message": "ok"
+    }
+}
+```
+
+### 行为列表
+
+#### /api/v1/open/segment/actions
+
+获取行为模型列表
+
+请求方式: GET
+
+query 参数：            
+
+| 参数     | 类型   | 是否必填 | 说明                   |
+|----------|--------|----------|------------------------|
+|  objectModelId   | string| | 对象ID     |
+
+请求CURL示例
+```shell
+curl --location 'http://HOST/audience/api/api/v1/open/segment/actions?objectModelId=ME32' \
+--header 'unitId: 3'
+```
+
+返回值示例
+```json
+{  
+    "data": [
+        {
+            "id": 33, // 行为模型ID
+            "name": "京东会员", // 行为模型名称
+            "objectName": "注册会员", // 所属对象名称
+            "subjectId": 2, // 所属主题id
+            "subjectName": "other", // 所属主题名称
+            ...
+        },
+        {
+            "id": 34,
+            "name": "天猫会员",
+            "objectName": "注册会员",
+            "subjectId": 2,
+            "subjectName": "other",
+            ...
+        }
+        ...
+    ],
+    "status": {
+        "code": "E0",
+        "message": "ok"
+    }
+}
+```
+
+### 行为维度列表
+
+#### /api/v1/open/segment/action/dimensions
+
+获取行为模型维度列表
+
+请求方式: GET
+
+query 参数：            
+
+| 参数     | 类型   | 是否必填 | 说明                   |
+|----------|--------|----------|------------------------|
+|  actionId   | string| | 行为模型ID     |
+
+请求CURL示例
+```shell
+curl --location 'http://HOST/audience/api/api/v1/open/segment/action/dimensions?actionId=33' \
+--header 'unitId: 3'
+```
+
+返回值示例
+```json
+{  
+    "data": [
+        {
+            "dimensionModelId": "37", // 维度ID
+            "dimensionName": "user_unionid", // 维度名称
+            "profileType": 5, // 数据类型标识： 5.文本 6.数值 7.日期 10.选项 24.多选
+            "dateFormat": null,
+            ...
+        },
+        {
+            "dimensionModelId": "43",
+            "dimensionName": "user_retime",
+            "typeName": "date",
+            "profileType": 7,
+            "dateFormat": "yyyy/MM/dd", // 日期类型格式
+            ...
+        }
+        ...
+    ],
+    "status": {
+        "code": "E0",
+        "message": "ok"
+    }
+}
+```
+
+### 行为维度列表
+
+#### /api/v1/open/segment/action/metrics
+
+获取行为模型指标列表
+
+请求方式: GET
+
+query 参数：            
+
+| 参数     | 类型   | 是否必填 | 说明                   |
+|----------|--------|----------|------------------------|
+|  actionId   | string| | 行为模型ID     |
+
+请求CURL示例
+```shell
+curl --location 'http://HOST/audience/api/api/v1/open/segment/action/metrics?actionId=33' \
+--header 'unitId: 3'
+```
+
+返回值示例
+```json
+{  
+    "data": [
+        {
+            "id": 92,
+            "name": "最大支付金额",
+            ...
+        },
+        {
+            "id": 91,
+            "name": "消费总金额",
+            ...
+        }
+        ...
+    ],
+    "status": {
+        "code": "E0",
+        "message": "ok"
+    }
+}
+```
+
+
+### 事件列表
+
+#### /api/v1/open/segment/events
+
+获取事件列表
+
+请求方式: GET
+
+query 参数：            
+
+| 参数     | 类型   | 是否必填 | 说明                   |
+|----------|--------|----------|------------------------|
+|  objectModelId   | string| | 对象ID     |
+
+请求CURL示例
+```shell
+curl --location 'http://HOST/audience/api/api/v1/open/segment/events?objectModelId=ME32' \
+--header 'unitId: 3'
+```
+
+返回值示例
+```json
+{  
+    "data": [
+        {
+            "id": 109,
+            "name": "test_event1018",
+            "enName": "test_event1018",
+            ...
+        },
+        {
+            "id": 108,
+            "name": "book_test_drive",
+            "enName": "book_test_drive",
+            ...
+        }
+        ...
+    ],
+    "status": {
+        "code": "E0",
+        "message": "ok"
+    }
+}
+```
+
+### 对象关系列表
+
+#### /api/v1/open/segment/object-relations
+
+获取当前对象下的 对象关系列表
+
+请求方式: GET
+
+query 参数：            
+
+| 参数     | 类型   | 是否必填 | 说明                   |
+|----------|--------|----------|------------------------|
+|  objectModelId   | string| | 对象ID     |
+
+请求CURL示例
+```shell
+curl --location 'http://HOST/audience/api/api/v1/open/segment/object-relations?objectModelId=ME32' \
+--header 'unitId: 3'
+```
+
+返回值示例
+```json
+{  
+    "data": [
+        {
+            "id": 5, // 关系ID
+            "name": "领券关系", // 关系名称
+            "sourceObjectId": "EN1", // 关系源对象ID
+            "sourceObjectName": "注册会员",
+            "targetObjectId": "EN18", // 关系目标对象ID
+            "targetObjectName": "领券买家",
+            "serviceProperties": [ // 关系对象自身属性列表
+                {
+                    "id": 111,
+                    "name": "当前是否有效",
+                    "enName": "valid",
+                    "attribute": "qty ",
+                    "dateFormat": null,
+                    "profileType": 10
+                },
+                {
+                    "id": 112,
+                    "name": "关系起始时间",
+                    "enName": "createTime",
+                    "attribute": "price2_time ",
+                    "dictId": null,
+                    "dictConfigs": {},
+                    "dateFormat": "YYYY/MM/DD",
+                    "profileType": 7
+                }
+            ],
+            "sourceObject": {
+                "id": "EN1",
+                "type": 1,
+                "name": "注册会员",
+                "properties": [],
+                "tags": [],
+                "events": [].
+                "actions": []
+            },
+            "targetObject": {
+                "id": "EN18",
+                "type": 1,
+                "name": "领券买家",
+                "properties": [],
+                "tags": [],
+                "events": [].
+                "actions": []
+            },
+            ...
+        },
+        {
+            "id": 3,
+            "name": "用户拥有券",
+            "sourceObjectId": "EN1",
+            "sourceObjectName": "注册会员",
+            "targetObjectId": "EN18",
+            "targetObjectName": "领券买家",
+            ...
+        }
+        ...
+    ],
+    "status": {
+        "code": "E0",
+        "message": "ok"
+    }
+}
+```
+
+### 和当前对象存在关系的对象列表
+
+#### /api/v1/open/segment/object-relation/related-objects
+
+和当前对象存在关系的对象列表
+
+请求方式: GET
+
+query 参数：            
+
+| 参数     | 类型   | 是否必填 | 说明                   |
+|----------|--------|----------|------------------------|
+|  objectModelId   | string| | 对象ID     |
+
+请求CURL示例
+```shell
+curl --location 'http://HOST/audience/api/api/v1/open/segment/object-relation/related-objects?objectModelId=ME32' \
+--header 'unitId: 3'
+```
+
+返回值示例
+```json
+{  
+    "data": [
+        {
+            "id": "EN18",
+            "name": "领券买家",
+            "type": 1
+        },
+        {
+            "id": "EN2",
+            "name": "下单买家",
+            "type": 1
+        }
+    ],
+    "status": {
+        "code": "E0",
+        "message": "ok"
+    }
+}
+```
+
+### 两个对象之间存在的关系的列表
+
+#### /api/v1/open/segment/object-relation/related-relations
+
+两个对象之间存在的关系的列表
+
+请求方式: GET
+
+query 参数：            
+
+| 参数     | 类型   | 是否必填 | 说明                   |
+|----------|--------|----------|------------------------|
+|  sourceObjectModelId   | string| | 两个对象之一     |
+|  targetObjectModelId   | string| | 两个对象之一     |
+
+请求CURL示例
+```shell
+curl --location 'http://HOST/audience/api/api/v1/open/segment/object-relation/related-relations?sourceObjectModelId=EN1&targetObjectModelId=EN18' \
+--header 'unitId: 3'
+```
+
+返回值示例
+```json
+{  
+    "data": [
+        {
+            "id": 5, // 关系ID
+            "name": "领券关系", // 关系名称
+        },
+        {
+            "id": 3,
+            "name": "用户拥有券",
+        }
+    ],
+    "status": {
+        "code": "E0",
+        "message": "ok"
+    }
+}
+```
+
+### 对象关系属性列表
+
+#### /api/v1/open/segment/object-relation/propertys
+
+获取对象关系属性列表
+
+请求方式: GET
+
+query 参数：            
+
+| 参数     | 类型   | 是否必填 | 说明                   |
+|----------|--------|----------|------------------------|
+|  id   | string| | 对象关系id     |
+
+请求CURL示例
+```shell
+curl --location 'http://HOST/audience/api/api/v1/open/segment/object-relation/propertys?id=5' \
+--header 'unitId: 3'
+```
+
+返回值示例
+```json
+{  
+    "data": [
+        {
+            "id": 15,
+            "name": "当前是否有效",
+            "enName": "valid",
+            "profileType": 24
+        },
+        {
+            "id": 16,
+            "name": "关系起始时间",
+            "enName": "createTime",
+            "profileType": 7,
+            "dateFormat": "YYYY/MM/DD",
+        },
+        {
+            "id": 17,
+            "name": "关系时长",
+            "enName": "duration",
+            "profileType": 6
+        }
+    ],
+    "status": {
+        "code": "E0",
+        "message": "ok"
+    }
+}
+```
+
+### 对象关系选项型属性属性值
+
+#### /api/v1/open/segment/object-relation/property/values
+
+对象关系选项型属性属性值
+
+请求方式: GET
+
+query 参数：            
+
+| 参数     | 类型   | 是否必填 | 说明                   |
+|----------|--------|----------|------------------------|
+|  id   | string| | 对象关系属性id     |
+
+请求CURL示例
+```shell
+curl --location 'http://HOST/audience/api/api/v1/open/segment/object-relation/property/values?id=5' \
+--header 'unitId: 3'
+```
+
+返回值示例
+```json
+{  
+    "data": [
+        {
+            "id": "1", // 属性值ID
+            "value": "1", // 属性值ID
+            "name": "男", // 属性值名称
+            "label": "男", // 属性值名称
+        },
+        ...
+    ],
+    "status": {
+        "code": "E0",
+        "message": "ok"
+    }
+}
+```
+
+
+
+
+

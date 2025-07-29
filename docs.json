@@ -1,9 +1,9 @@
 {
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
-  "name": "Mint Starter Kit",
+  "name": "ChiefClouds DataPlatform DOCS",
   "colors": {
-    "primary": "#16A34A",
+    "primary": "#1790e4",
     "light": "#07C983",
     "dark": "#15803D"
   },
@@ -11,7 +11,7 @@
   "navigation": {
     "tabs": [
       {
-        "tab": "Guides",
+        "tab": "DataPlatform",
         "groups": [
           {
             "group": "Getting started",
@@ -48,7 +48,48 @@
         ]
       },
       {
-        "tab": "API reference",
+        "tab": "CDP",
+        "groups": [
+          {
+            "group": "CDP documentation",
+            "pages": [
+              "cdp/meta",
+              "cdp/segmentation"
+            ]
+          },
+          {
+            "group": "Endpoint examples",
+            "pages": [
+              "api-reference/endpoint/get",
+              "api-reference/endpoint/create",
+              "api-reference/endpoint/delete",
+              "api-reference/endpoint/webhook"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "CEP",
+        "groups": [
+          {
+            "group": "API documentation",
+            "pages": [
+              "api-reference/introduction"
+            ]
+          },
+          {
+            "group": "Endpoint examples",
+            "pages": [
+              "api-reference/endpoint/get",
+              "api-reference/endpoint/create",
+              "api-reference/endpoint/delete",
+              "api-reference/endpoint/webhook"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "CRM",
         "groups": [
           {
             "group": "API documentation",
@@ -89,7 +130,8 @@
     }
   },
   "logo": {
-    "light": "/logo/light.svg",
+    "light": "/logo/chiefclouds_logo1.png",
+    "light1": "/logo/light.svg",
     "dark": "/logo/dark.svg"
   },
   "navbar": {
