@@ -1,25 +1,25 @@
-
 # 人群服务元数据相关接口
 
 ## 授权
 
-	请求header添加
-	timestamp 	时间戳(毫秒)
-	randomStr	随机字符串(至少10个字符)
-	token	签名
+请求header添加
+timestamp 	时间戳(毫秒)
+randomStr	随机字符串(至少10个字符)
+token	签名
 
 #### 签名规则
 
-	token = SHA-512('apiSecret=' + apiSecret + '&randomStr=' + randomStr + '&timestamp=' + timestamp);
+token = SHA-512('apiSecret=' \+ apiSecret \+ '&randomStr=' \+ randomStr \+ '&timestamp=' \+ timestamp);
 
-	audience的apiSecret: ucmjwlyhdi2k6w5pxvfgvi
+audience的apiSecret: XXXXX
 
 ## 运营单位指定
 
 元数据获取需要限定所属视图， OM中视图与UPM运营单位一一绑定， 通过指定运营单位可获取对应视图下的一系列元数据。
 
 #### 方法
-    接口请求Header参数中， 添加 unitId 字段
+
+接口请求Header参数中， 添加 unitId 字段
 
 ```
 curl 'http://HOST/api/v1/open/usertype-object-list' \
@@ -31,20 +31,20 @@ curl 'http://HOST/api/v1/open/usertype-object-list' \
 
 ## 人群服务元数据相关接口
 
-* [(get) /api/v1/open/usertype-object-list](#对象列表) 对象列表
-* [(get) /api/v1/open/segment/attributes](#属性标签列表) 属性标签列表
-* [(get) /api/v1/open/segment/propertys](#属性列表) 属性列表
-* [(get) /api/v1/open/segment/tags](#标签列表) 标签列表
-* [(get) /api/v1/open/segment/idTypes](#对象ID类型列表) 对象ID类型列表
-* [(get) /api/v1/open/segment/actions](#行为列表) 行为列表
-* [(get) /api/v1/open/segment/action/dimensions](#行为维度列表) 行为维度列表
-* [(get) /api/v1/open/segment/action/metrics](#行为指标列表) 行为指标列表
-* [(get) /api/v1/open/segment/events](#事件列表) 事件列表
-* [(get) /api/v1/open/segment/object-relations](#对象关系列表) 对象关系列表
-* [(get) /api/v1/open/segment/object-relation/related-objects](#和当前对象存在关系的对象列表) 和当前对象存在关系的对象列表
-* [(get) /api/v1/open/segment/object-relation/related-relations](#两个对象之间存在的关系的列表) 两个对象之间存在的关系的列表
-* [(get) /api/v1/open/segment/object-relation/propertys](#对象关系属性列表) 对象关系属性列表
-* [(get) /api/v1/open/segment/object-relation/property/values](#对象关系选项型属性属性值) 对象关系选项型属性属性值
+- [(get) /api/v1/open/usertype-object-list](#对象列表) 对象列表
+- [(get) /api/v1/open/segment/attributes](#属性标签列表) 属性标签列表
+- [(get) /api/v1/open/segment/propertys](#属性列表) 属性列表
+- [(get) /api/v1/open/segment/tags](#标签列表) 标签列表
+- [(get) /api/v1/open/segment/idTypes](#对象ID类型列表) 对象ID类型列表
+- [(get) /api/v1/open/segment/actions](#行为列表) 行为列表
+- [(get) /api/v1/open/segment/action/dimensions](#行为维度列表) 行为维度列表
+- [(get) /api/v1/open/segment/action/metrics](#行为指标列表) 行为指标列表
+- [(get) /api/v1/open/segment/events](#事件列表) 事件列表
+- [(get) /api/v1/open/segment/object-relations](#对象关系列表) 对象关系列表
+- [(get) /api/v1/open/segment/object-relation/related-objects](#和当前对象存在关系的对象列表) 和当前对象存在关系的对象列表
+- [(get) /api/v1/open/segment/object-relation/related-relations](#两个对象之间存在的关系的列表) 两个对象之间存在的关系的列表
+- [(get) /api/v1/open/segment/object-relation/propertys](#对象关系属性列表) 对象关系属性列表
+- [(get) /api/v1/open/segment/object-relation/property/values](#对象关系选项型属性属性值) 对象关系选项型属性属性值
 
 ### 对象列表
 
@@ -55,12 +55,14 @@ curl 'http://HOST/api/v1/open/usertype-object-list' \
 请求方式: GET
 
 请求CURL示例
+
 ```shell
     curl --location 'http://HOST/audience/api/api/v1/open/usertype-object-list' \
     --header 'unitId: 3'
 ```
 
-返回值示例: 
+返回值示例:
+
 ```json
 {
     "data": [
@@ -171,7 +173,6 @@ curl 'http://HOST/api/v1/open/usertype-object-list' \
 }
 ```
 
-
 ### 属性标签列表
 
 #### /api/v1/open/segment/attributes
@@ -180,19 +181,21 @@ curl 'http://HOST/api/v1/open/usertype-object-list' \
 
 请求方式: GET
 
-query 参数：            
+query 参数：
 
-| 参数     | 类型   | 是否必填 | 说明                   |
-|----------|--------|----------|------------------------|
-|  objectModelId   | string| | 对象ID     |
+| 参数            | 类型     | 是否必填 | 说明   |
+| ------------- | ------ | ---- | ---- |
+| objectModelId | string |      | 对象ID |
 
 请求CURL示例
+
 ```shell
 curl --location 'http://HOST/audience/api/api/v1/open/segment/attributes?objectModelId=ME32' \
 --header 'unitId: 3'
 ```
 
 返回值示例
+
 ```json
 {  
     "data": [
@@ -252,26 +255,27 @@ curl --location 'http://HOST/audience/api/api/v1/open/segment/attributes?objectM
 }
 ```
 
-
 ### 属性列表
 
 #### /api/v1/open/segment/propertys
 
 获取对象下可用于圈人的属性列表
 
-query 参数：            
+query 参数：
 
-| 参数     | 类型   | 是否必填 | 说明                   |
-|----------|--------|----------|------------------------|
-|  objectModelId   | string| | 对象ID     |
+| 参数            | 类型     | 是否必填 | 说明   |
+| ------------- | ------ | ---- | ---- |
+| objectModelId | string |      | 对象ID |
 
 请求CURL示例
+
 ```shell
 curl --location 'http://HOST/audience/api/api/v1/open/segment/propertys?objectModelId=ME32' \
 --header 'unitId: 3'
 ```
 
 返回值示例
+
 ```json
 {  
     "data": [
@@ -319,19 +323,21 @@ curl --location 'http://HOST/audience/api/api/v1/open/segment/propertys?objectMo
 
 请求方式: GET
 
-query 参数：            
+query 参数：
 
-| 参数     | 类型   | 是否必填 | 说明                   |
-|----------|--------|----------|------------------------|
-|  objectModelId   | string| | 对象ID     |
+| 参数            | 类型     | 是否必填 | 说明   |
+| ------------- | ------ | ---- | ---- |
+| objectModelId | string |      | 对象ID |
 
 请求CURL示例
+
 ```shell
 curl --location 'http://HOST/audience/api/api/v1/open/segment/tags?objectModelId=ME32' \
 --header 'unitId: 3'
 ```
 
 返回值示例
+
 ```json
 {  
     "data": [
@@ -371,19 +377,21 @@ curl --location 'http://HOST/audience/api/api/v1/open/segment/tags?objectModelId
 
 请求方式: GET
 
-query 参数：            
+query 参数：
 
-| 参数     | 类型   | 是否必填 | 说明                   |
-|----------|--------|----------|------------------------|
-|  objectModelId   | string| | 对象ID     |
+| 参数            | 类型     | 是否必填 | 说明   |
+| ------------- | ------ | ---- | ---- |
+| objectModelId | string |      | 对象ID |
 
 请求CURL示例
+
 ```shell
 curl --location 'http://HOST/audience/api/api/v1/open/segment/idTypes?objectModelId=ME32' \
 --header 'unitId: 3'
 ```
 
 返回值示例
+
 ```json
 {  
     "data": [
@@ -414,19 +422,21 @@ curl --location 'http://HOST/audience/api/api/v1/open/segment/idTypes?objectMode
 
 请求方式: GET
 
-query 参数：            
+query 参数：
 
-| 参数     | 类型   | 是否必填 | 说明                   |
-|----------|--------|----------|------------------------|
-|  objectModelId   | string| | 对象ID     |
+| 参数            | 类型     | 是否必填 | 说明   |
+| ------------- | ------ | ---- | ---- |
+| objectModelId | string |      | 对象ID |
 
 请求CURL示例
+
 ```shell
 curl --location 'http://HOST/audience/api/api/v1/open/segment/actions?objectModelId=ME32' \
 --header 'unitId: 3'
 ```
 
 返回值示例
+
 ```json
 {  
     "data": [
@@ -463,19 +473,21 @@ curl --location 'http://HOST/audience/api/api/v1/open/segment/actions?objectMode
 
 请求方式: GET
 
-query 参数：            
+query 参数：
 
-| 参数     | 类型   | 是否必填 | 说明                   |
-|----------|--------|----------|------------------------|
-|  actionId   | string| | 行为模型ID     |
+| 参数       | 类型     | 是否必填 | 说明     |
+| -------- | ------ | ---- | ------ |
+| actionId | string |      | 行为模型ID |
 
 请求CURL示例
+
 ```shell
 curl --location 'http://HOST/audience/api/api/v1/open/segment/action/dimensions?actionId=33' \
 --header 'unitId: 3'
 ```
 
 返回值示例
+
 ```json
 {  
     "data": [
@@ -511,19 +523,21 @@ curl --location 'http://HOST/audience/api/api/v1/open/segment/action/dimensions?
 
 请求方式: GET
 
-query 参数：            
+query 参数：
 
-| 参数     | 类型   | 是否必填 | 说明                   |
-|----------|--------|----------|------------------------|
-|  actionId   | string| | 行为模型ID     |
+| 参数       | 类型     | 是否必填 | 说明     |
+| -------- | ------ | ---- | ------ |
+| actionId | string |      | 行为模型ID |
 
 请求CURL示例
+
 ```shell
 curl --location 'http://HOST/audience/api/api/v1/open/segment/action/metrics?actionId=33' \
 --header 'unitId: 3'
 ```
 
 返回值示例
+
 ```json
 {  
     "data": [
@@ -546,7 +560,6 @@ curl --location 'http://HOST/audience/api/api/v1/open/segment/action/metrics?act
 }
 ```
 
-
 ### 事件列表
 
 #### /api/v1/open/segment/events
@@ -555,19 +568,21 @@ curl --location 'http://HOST/audience/api/api/v1/open/segment/action/metrics?act
 
 请求方式: GET
 
-query 参数：            
+query 参数：
 
-| 参数     | 类型   | 是否必填 | 说明                   |
-|----------|--------|----------|------------------------|
-|  objectModelId   | string| | 对象ID     |
+| 参数            | 类型     | 是否必填 | 说明   |
+| ------------- | ------ | ---- | ---- |
+| objectModelId | string |      | 对象ID |
 
 请求CURL示例
+
 ```shell
 curl --location 'http://HOST/audience/api/api/v1/open/segment/events?objectModelId=ME32' \
 --header 'unitId: 3'
 ```
 
 返回值示例
+
 ```json
 {  
     "data": [
@@ -600,19 +615,21 @@ curl --location 'http://HOST/audience/api/api/v1/open/segment/events?objectModel
 
 请求方式: GET
 
-query 参数：            
+query 参数：
 
-| 参数     | 类型   | 是否必填 | 说明                   |
-|----------|--------|----------|------------------------|
-|  objectModelId   | string| | 对象ID     |
+| 参数            | 类型     | 是否必填 | 说明   |
+| ------------- | ------ | ---- | ---- |
+| objectModelId | string |      | 对象ID |
 
 请求CURL示例
+
 ```shell
 curl --location 'http://HOST/audience/api/api/v1/open/segment/object-relations?objectModelId=ME32' \
 --header 'unitId: 3'
 ```
 
 返回值示例
+
 ```json
 {  
     "data": [
@@ -689,19 +706,21 @@ curl --location 'http://HOST/audience/api/api/v1/open/segment/object-relations?o
 
 请求方式: GET
 
-query 参数：            
+query 参数：
 
-| 参数     | 类型   | 是否必填 | 说明                   |
-|----------|--------|----------|------------------------|
-|  objectModelId   | string| | 对象ID     |
+| 参数            | 类型     | 是否必填 | 说明   |
+| ------------- | ------ | ---- | ---- |
+| objectModelId | string |      | 对象ID |
 
 请求CURL示例
+
 ```shell
 curl --location 'http://HOST/audience/api/api/v1/open/segment/object-relation/related-objects?objectModelId=ME32' \
 --header 'unitId: 3'
 ```
 
 返回值示例
+
 ```json
 {  
     "data": [
@@ -731,20 +750,22 @@ curl --location 'http://HOST/audience/api/api/v1/open/segment/object-relation/re
 
 请求方式: GET
 
-query 参数：            
+query 参数：
 
-| 参数     | 类型   | 是否必填 | 说明                   |
-|----------|--------|----------|------------------------|
-|  sourceObjectModelId   | string| | 两个对象之一     |
-|  targetObjectModelId   | string| | 两个对象之一     |
+| 参数                  | 类型     | 是否必填 | 说明     |
+| ------------------- | ------ | ---- | ------ |
+| sourceObjectModelId | string |      | 两个对象之一 |
+| targetObjectModelId | string |      | 两个对象之一 |
 
 请求CURL示例
+
 ```shell
 curl --location 'http://HOST/audience/api/api/v1/open/segment/object-relation/related-relations?sourceObjectModelId=EN1&targetObjectModelId=EN18' \
 --header 'unitId: 3'
 ```
 
 返回值示例
+
 ```json
 {  
     "data": [
@@ -772,19 +793,21 @@ curl --location 'http://HOST/audience/api/api/v1/open/segment/object-relation/re
 
 请求方式: GET
 
-query 参数：            
+query 参数：
 
-| 参数     | 类型   | 是否必填 | 说明                   |
-|----------|--------|----------|------------------------|
-|  id   | string| | 对象关系id     |
+| 参数 | 类型     | 是否必填 | 说明     |
+| --- | ------ | ---- | ------ |
+| id | string |      | 对象关系id |
 
 请求CURL示例
+
 ```shell
 curl --location 'http://HOST/audience/api/api/v1/open/segment/object-relation/propertys?id=5' \
 --header 'unitId: 3'
 ```
 
 返回值示例
+
 ```json
 {  
     "data": [
@@ -823,19 +846,21 @@ curl --location 'http://HOST/audience/api/api/v1/open/segment/object-relation/pr
 
 请求方式: GET
 
-query 参数：            
+query 参数：
 
-| 参数     | 类型   | 是否必填 | 说明                   |
-|----------|--------|----------|------------------------|
-|  id   | string| | 对象关系属性id     |
+| 参数 | 类型     | 是否必填 | 说明       |
+| --- | ------ | ---- | -------- |
+| id | string |      | 对象关系属性id |
 
 请求CURL示例
+
 ```shell
 curl --location 'http://HOST/audience/api/api/v1/open/segment/object-relation/property/values?id=5' \
 --header 'unitId: 3'
 ```
 
 返回值示例
+
 ```json
 {  
     "data": [
@@ -853,8 +878,3 @@ curl --location 'http://HOST/audience/api/api/v1/open/segment/object-relation/pr
     }
 }
 ```
-
-
-
-
-
